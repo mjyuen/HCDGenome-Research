@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#SBATCH -N 1 # node count
+#SBATCH --ntasks-per-node=2
+#SBATCH --mem-per-cpu=4000
+#SBATCH -t 1:00:00
+#SBATCH --array=1-5
+#SBATCH -o /scratch/gpfs/mjyuen/HCD_Index/%a.out
+#SBATCH -e /scratch/gpfs/mjyuen/HCD_Index/%a.err
+# sends mail when process begins and when it ends
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+#SBATCH --mail-user=mjyuen@princeton.edu
+
+# set the number of threads to be used for this run
+export OMP_NUM_THREADS=2
+
+cd /scratch/gpfs/mjyuen/HCD_Index
+
+
+echo Processing calculation number $((SLURM_ARRAY_TASK_ID))
+echo JOBID= $SLURM_JOBID
+
+echo "/home/maglau/tools/bowtie2-2.2.5/bowtie2-build -f ../genome/HCD_$N.fasta HCD_$N"
+
+# build bowtie2 index
+N=$((SLURM_ARRAY_TASK_ID))
+/home/maglau/tools/bowtie2-2.2.5/bowtie2-build -f ../genome/HCD_$N.fasta HCD_$N
+
+echo ""
+echo "index generated" 

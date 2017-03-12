@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#SBATCH -N 1 # node count
+#SBATCH --ntasks-per-node=10
+#SBATCH --mem-per-cpu=4000
+#SBATCH -t 1:00:00
+#SBATCH --array=57
+# SBATCH -o /scratch/gpfs/mjyuen/TT109/%a.out
+#SBATCH -e /scratch/gpfs/mjyuen/TT107xHCD_57_hybrid/%a.err
+# sends mail when process begins and when it ends
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+#SBATCH --mail-user=mjyuen@princeton.edu
+
+# set the number of threads to be used for this run
+export OMP_NUM_THREADS=10
+
+cd /scratch/gpfs/mjyuen/TT107xHCD_57_hybrid/
+
+echo Processing calculation number $((SLURM_ARRAY_TASK_ID))
+echo JOBID= $SLURM_JOBID
+
+N=$((SLURM_ARRAY_TASK_ID))
+
+# use already built index
+
+# Mapping cRNA reads to cRNA contigs (def = very sensitive mode, -D 15 -R 2 -L 22 -i S,1,1.15; --un <path> to keep the unaligned reads)
+# /home/maglau/tools/bowtie2-2.2.5/bowtie2 --end-to-end --very-sensitive -p 10 -t -x /scratch/gpfs/mjyuen/HCD_Index/HCD_$N -f -1 /scratch/gpfs/mjyuen/BE326_FW250111_BH2/BE326_FW250111_BH2_R1.fasta -2 /scratch/gpfs/mjyuen/BE326_FW250111_BH2/BE326_FW250111_BH2_R2.fasta -U /scratch/gpfs/mjyuen/BE326_FW250111_BH2/BE326_FW250111_BH2_U.fasta -S BE326_FW250111_BH2xHCD_$N.sam 
+
+/tigress/maglau/tools/bowtie2-2.2.5/bowtie2 --end-to-end --very-sensitive -p 10 -t -x /scratch/gpfs/mjyuen/HCD_Index/HCD_$N -f ref_contig_1000.fa -S ref_contig_1000xHCD_$N.sam
+
+echo ""
+echo "mapping completed"

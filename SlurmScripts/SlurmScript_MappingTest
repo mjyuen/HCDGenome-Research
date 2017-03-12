@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#SBATCH -N 1 # node count
+#SBATCH -c 10
+#SBATCH -t 1:00:00
+# sends mail when process begins and when it ends
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+#SBATCH --mail-user=mjyuen@princeton.edu
+
+# set the number of threads to be used for this run
+export OMP_NUM_THREADS=10
+
+cd /scratch/gpfs/mjyuen/Sulfuritalea/
+
+# build bowtie2 index
+# cRNA contigs
+/home/maglau/tools/bowtie2-2.2.5/bowtie2-build -f Sulfuritalea.fasta Sulfuritalea
+
+# Mapping cRNA reads to cRNA contigs (def = sensitive mode, -D 15 -R 2 -L 22 -i S,1,1.15; --un <path> to keep the unaligned reads)
+/home/maglau/tools/bowtie2-2.2.5/bowtie2 --end-to-end -p 10 --norc -t -x Sulfuritalea -f /scratch/gpfs/maglau/BE326FW270712-BH2_postQC.fasta -S Sulfuritalea.sam
+

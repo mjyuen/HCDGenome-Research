@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#SBATCH -N 1 # node count
+#SBATCH --ntasks-per-node=2
+#SBATCH --mem-per-cpu=4000
+#SBATCH -t 3:00:00
+# sends mail when process begins and when it ends
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+#SBATCH --mail-user=mjyuen@princeton.edu
+
+# set the number of threads to be used for this run
+export OMP_NUM_THREADS=2
+
+echo "run python script"
+echo ""
+# run python script
+
+python /scratch/gpfs/mjyuen/Interlace.py /scratch/gpfs/mjyuen/BE326_FW270712_BH2/BE326_FW270712_BH2_R1.fasta /scratch/gpfs/mjyuen/BE326_FW270712_BH2/BE326_FW270712_BH2_R2.fasta BE326_FW270712_BH2_R
+
+
+echo ""
+echo "reads interlaced" 
